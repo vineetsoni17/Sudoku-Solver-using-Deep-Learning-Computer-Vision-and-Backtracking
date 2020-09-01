@@ -3,8 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def fun(): 
-    
-    
+
     cap=cv2.VideoCapture(0)
     while True:
         cv2.createTrackbar('bw_threshold','image', 0, 255, fun)

@@ -2,15 +2,15 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-im=cv2.imread("1200px-Sudoku_Puzzle_by_L2G-20050714_standardized_layout.svg.png", cv2.IMREAD_COLOR)
+im=cv2.imread("sudoku-puzzle-games.jpg")
 bw=cv2.cvtColor(im,cv2.COLOR_BGR2GRAY)
 x=cv2.GaussianBlur(bw,(1,1),cv2.BORDER_DEFAULT)
 ret, inv=cv2.threshold(x, 170, 255, cv2.THRESH_BINARY_INV)
-canny=cv2.Canny(inv, 500, 500)
+canny=cv2.Canny(inv, 0, 0)
 lines=cv2.HoughLines(canny, 1, np.pi/180, 300)
 
 grid_marked=im
-for i in range(0,len(lines)):
+for i in range(len(lines)):
     for dist, theta in lines[i]:
         a=np.cos(theta)
         b=np.sin(theta)
@@ -25,5 +25,6 @@ for i in range(0,len(lines)):
 cv2.imwrite('grid_marked.png', grid_marked)
 plt.imshow(grid_marked)
 plt.show()
+
 
 
