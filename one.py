@@ -6,7 +6,7 @@ def fun(x):
     print(x)
 
 cv2.namedWindow('image')
-cv2.createTrackbar('bw_threshold','image', 0, 255, fun)
+cv2.createTrackbar('bw_threshold','image', 1, 255, fun)
 cv2.createTrackbar('u_t','image', 0, 100, fun)
 cv2.createTrackbar('l_t', 'image', 0, 100, fun)
 
@@ -19,7 +19,7 @@ while True:
     f, im= cap.read()
     bw=cv2.cvtColor(im,cv2.COLOR_BGR2GRAY)
     x=cv2.GaussianBlur(bw,(5,5),cv2.BORDER_DEFAULT)
-    ret, inv=cv2.threshold(x, 160, 255, cv2.THRESH_BINARY_INV)
+    inv=cv2.adaptiveThreshold(x, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 2*a+1, b)
     canny=cv2.Canny(inv, b, c)
     contour, hierarchy=cv2.findContours(canny, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     cv2.drawContours(im, contour, -1, (0, 0, 255), 4)
