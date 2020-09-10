@@ -28,7 +28,7 @@ def real_deal(im):
     return index
 
 def vectorization(im, parameters):
-    # ret, x = cv2.threshold(im, 160, 255, cv2.THRESH_BINARY_INV)
+    ret, x = cv2.threshold(im, 160, 255, cv2.THRESH_BINARY_INV)
     x = im
     feature_vector = x.reshape(-1, 1)
     feature_vector = feature_vector.astype('float64')
@@ -41,21 +41,25 @@ def data_shuffle(parameters, m):
     shuffle = np.random.permutation(m)
     a = (parameters["X0"].T[shuffle]).T
     b = (parameters["Y0"].T[shuffle]).T
-    parameters["X"] = a[:, :-100]
+    parameters["X"] = a[:, :-81]
     np.save("X", parameters["X"])
-    parameters["Y"] = b[:, :-100]
+    parameters["Y"] = b[:, :-81]
     np.save("Y", parameters["Y"])
-    parameters["X_dev"] = a[: , -100: ]
+    parameters["X_dev"] = a[: , -81: ]
     np.save("X_dev", parameters["X_dev"])
-    parameters["Y_dev"] = b[: , -100: ]
+    parameters["Y_dev"] = b[: , -81: ]
     np.save("Y_dev", parameters["Y_dev"])
     return parameters
 
-def initialize_parameters(layers, parameters):
+def initialize_parameters(layers, parameters, v, s):
     for i in range(1, len(layers)):
         parameters["W"+str(i)] = np.random.randn(layers[i], layers[i-1])*np.sqrt(1/layers[i-1])
         parameters["b"+str(i)] = np.zeros((layers[i],1))
-    return parameters
+        v["dW"+str(i)] = np.zeros(parameters["W"+str(i)].shape)
+        v["db"+str(i)] = np.zeros(parameters["b"+str(i)].shape)
+        s["dW"+str(i)] = np.zeros(parameters["W"+str(i)].shape)
+        s["db"+str(i)] = np.zeros(parameters["b"+str(i)].shape)
+    return parameters, v, s
 
 def forward_propagation(parameters, layers):
     parameters["A0"] = parameters["X"]
@@ -71,8 +75,13 @@ def cost_function(parameters):
     cost = np.sum(loss)/parameters["X"].shape[1]
     return cost
 
-def gradient_descent_and_update_parameters(parameters, layers, grads, learning_rate):
+def gradient_descent_and_update_parameters(parameters, layers, grads, learning_rate, v, s, epoch):
+    beta1 = 0.9
+    beta2 = 0.999
+    e = 10**-8
     l = len(layers) 
+    epoch += 1
+    print(epoch)
     m = parameters["X"].shape[1]
     grads["dA"+str(len(layers)-1)] = -np.divide(parameters["Y"], parameters["_Y_"]) + np.divide(1-parameters["Y"], 1-parameters["_Y_"])
     for i in range(1,l):
@@ -82,11 +91,15 @@ def gradient_descent_and_update_parameters(parameters, layers, grads, learning_r
         else:
             grads["dZ"+str(g)] = np.multiply(grads["dA"+str(g)],1/(np.cosh(parameters["Z"+str(g)]**2)))
         grads["dW"+str(g)] = np.dot(grads["dZ"+str(g)], parameters["A"+str(g-1)].T)/m
+        v["dW"+str(g)] = (beta1*v["dW"+str(g)] + (1-beta1)*grads["dW"+str(g)])/(1-beta1**epoch)
+        s["dW"+str(g)] = (beta2*s["dW"+str(g)] + (1-beta2)*((grads["dW"+str(g)])**2))/(1-beta2**epoch)
         grads["db"+str(g)] = np.sum(grads["dZ"+str(g)], axis=1, keepdims=True)/m
+        v["db"+str(g)] = (beta1*v["db"+str(g)] + (1-beta1)*grads["db"+str(g)])/(1-beta1**epoch)
+        s["db"+str(g)] = (beta2*s["db"+str(g)] + (1-beta2)*((grads["db"+str(g)])**2))/(1-beta2**epoch)
         grads["dA"+str(g-1)] = np.dot(parameters["W"+str(g)].T, grads["dZ"+str(g)])
-        parameters["W"+str(g)] = parameters["W"+str(g)] - learning_rate*grads["dW"+str(g)]
-        parameters["b"+str(g)] = parameters["b"+str(g)] - learning_rate*grads["db"+str(g)]
-    return grads, parameters
+        parameters["W"+str(g)] = parameters["W"+str(g)] - learning_rate*v["dW"+str(g)]/(np.sqrt(s["dW"+str(g)])+e)
+        parameters["b"+str(g)] = parameters["b"+str(g)] - learning_rate*v["db"+str(g)]/(np.sqrt(s["db"+str(g)])+e)
+    return grads, parameters, v, s
 
 def actual_answer(Y):
     y = np.where(Y >= np.max(Y), 1, 0)
@@ -96,9 +109,11 @@ def main():
     print("Initializing Program......")
 
     nx = 2500
-    learning_rate = 0.05
-    iterations = 10
+    learning_rate = 0.005
+    iterations = 20
     parameters = {}
+    v = {}
+    s = {}
     grads = {}
     parameters["X0"] = X_Y_writer.data_X(nx)
     parameters["Y0"] = X_Y_writer.data_Y()
@@ -107,27 +122,26 @@ def main():
     cost_lib = []
 
     data_shuffle(parameters, m)
-    initialize_parameters(layers, parameters)
-     
+    initialize_parameters(layers, parameters, v, s)
+    
     print("Training Neural Network, please wait......")
     # mini batch starting 
     queryX = parameters["X"]
     queryY = parameters["Y"]
-    for j in range(0, parameters["X"].shape[1]/81):
-        parameters["X"] = query[:, i*queryX.shape[1]/81: (i+1)*queryX.shape[1]/81]
-        parameters["Y"] = query[:, i*queryY.shape[1]/81: (i+1)*queryY.shape[1]/81]
-    # mini batch starting
-        for i in range(0, iterations):
+    for i in range(0, iterations):
+        for j in range(0, queryY.shape[1]//81):
+            parameters["X"] = queryX[:, int(j*queryX.shape[1]/81): int((j+1)*queryX.shape[1]/81)]
+            parameters["Y"] = queryY[:, int(j*queryY.shape[1]/81): int((j+1)*queryY.shape[1]/81)]
             forward_propagation(parameters, layers)
             cost = cost_function(parameters)
-            gradient_descent_and_update_parameters(parameters, layers, grads, learning_rate)
+            gradient_descent_and_update_parameters(parameters, layers, grads, learning_rate, v, s, i)
             cost_lib.append(cost)
     
     for i in range(1, len(layers)):
         np.savez("Parameters/Layer_"+str(i), W=parameters["W"+str(i)], b=parameters["b"+str(i)])
     
     print("Traing Successful!")
-    plt.plot(range(0, iterations), cost_lib)
+    plt.plot(range(0, len(cost_lib)), cost_lib)
     plt.xlabel("Iterations")
     plt.ylabel("Cost")
     plt.title("Cost Function")
@@ -135,7 +149,7 @@ def main():
 
     return 0
 
-# main()
+main()
     
 
 
