@@ -17,7 +17,6 @@ def data_Y()->np.array:
 
 def vectorization(im, nx)->np.array:
     ret, x = cv2.threshold(im, 160, 255, cv2.THRESH_BINARY_INV)
-    x = im
     feature_vector = np.reshape(x, (1, nx))
     feature_vector = feature_vector.astype('float64')
     return feature_vector
@@ -34,7 +33,5 @@ def data_X(nx)->np.array:
     data -= mean
     data /= np.std(data)
     data = data.T
-    data = np.reshape(data, (nx, (len(os.listdir('Database/Dataset')))-1))
     return data
 
-data_Y()
