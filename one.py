@@ -7,26 +7,24 @@ def fun(x):
 
 cv2.namedWindow('image')
 cv2.createTrackbar('bw_threshold','image', 1, 255, fun)
-cv2.createTrackbar('u_t','image', 0, 100, fun)
-cv2.createTrackbar('l_t', 'image', 0, 100, fun)
+cv2.createTrackbar('constant','image', 0, 100, fun)
 
 cap=cv2.VideoCapture(0)
 
 while True:
     a=cv2.getTrackbarPos('bw_threshold', 'image')
-    b=cv2.getTrackbarPos('u_t', 'image')
-    c=cv2.getTrackbarPos('l_t', 'image')
+    b=cv2.getTrackbarPos('constant', 'image')
     f, im= cap.read()
     bw=cv2.cvtColor(im,cv2.COLOR_BGR2GRAY)
     x=cv2.GaussianBlur(bw,(5,5),cv2.BORDER_DEFAULT)
     inv=cv2.adaptiveThreshold(x, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 2*a+1, b)
-    canny=cv2.Canny(inv, b, c)
+    canny=cv2.Canny(inv, 100, 100)
     contour, hierarchy=cv2.findContours(canny, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     cv2.drawContours(im, contour, -1, (0, 0, 255), 4)
     cv2.imshow('im', im)
     cv2.imshow('canny', canny)
     cv2.imshow('inv', inv)
-    if cv2.waitKey(1) & 0xFF==ord('q'):
+    if cv2.waitKey(5) & 0xFF==ord('q'):
         break
 
 cap.release()

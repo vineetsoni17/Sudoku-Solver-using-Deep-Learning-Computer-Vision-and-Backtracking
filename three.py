@@ -11,7 +11,7 @@ def real_deal(im):
     parameters = {}
     parameters["X0"] = X_Y_writer.data_X(nx)
     parameters["Y0"] = X_Y_writer.data_Y()
-    layers = (nx, 1000, 500, 100, 10)
+    layers = (nx, 1500, 500, 10)
     j = 1
     for i in os.listdir("Parameters"):
         layer = np.load(f"Parameters/{i}")
@@ -66,7 +66,7 @@ def forward_propagation(parameters, layers):
     parameters["A0"] = parameters["X"]
     for i in range(1, len(layers)):
         parameters["Z"+str(i)] = np.dot(parameters["W"+str(i)], parameters["A"+str(i-1)]) + parameters["b"+str(i)]
-        parameters["A"+str(i)] = sigmoid(parameters["Z"+str(i)])
+        parameters["A"+str(i)] = np.tanh(parameters["Z"+str(i)])
     a = np.exp(parameters["Z"+str(len(layers)-1)])
     parameters["_Y_"] = a/np.sum(a, axis=0)
     return parameters
@@ -83,24 +83,24 @@ def gradient_descent_and_update_parameters(parameters, layers, grads, learning_r
     l = len(layers) 
     epoch += 1
     m = parameters["X"].shape[1]
-    grads["dA"+str(len(layers)-1)] = -np.divide(parameters["Y"], parameters["_Y_"])  #+ np.divide(1-parameters["Y"], 1-parameters["_Y_"])
+    grads["dA"+str(len(layers)-1)] = -np.divide(parameters["Y"], parameters["_Y_"]) #+ np.divide(1-parameters["Y"], 1-parameters["_Y_"])
     for i in range(1,l):
         g = l-i
         if g == l-1:
             grads["dZ"+str(g)] = parameters["_Y_"] - parameters["Y"]
         else:
-            grads["dZ"+str(g)] = grads["dA"+str(g)]*sigmoid(parameters["Z"+str(g)])*(1-sigmoid(parameters["Z"+str(g)]))   #np.multiply(grads["dA"+str(g)],np.reciprocal(np.square(np.cosh(parameters["Z"+str(g)]))))
+            grads["dZ"+str(g)] = np.multiply(grads["dA"+str(g)],np.reciprocal(np.square(np.cosh(parameters["Z"+str(g)]))))   #grads["dA"+str(g)]*sigmoid(parameters["Z"+str(g)])*(1-sigmoid(parameters["Z"+str(g)]))   #np.multiply(grads["dA"+str(g)],np.reciprocal(np.square(np.cosh(parameters["Z"+str(g)]))))
         grads["dW"+str(g)] = np.dot(grads["dZ"+str(g)], parameters["A"+str(g-1)].T)/m
-        v["dW"+str(g)] = (beta1*v["dW"+str(g)] + (1-beta1)*grads["dW"+str(g)])   #/(1-(beta1**epoch))
+        v["dW"+str(g)] = (beta1*v["dW"+str(g)] + (1-beta1)*grads["dW"+str(g)])  #/(1-(beta1**epoch))
         #s["dW"+str(g)] = (beta2*s["dW"+str(g)] + (1-beta2)*np.square(grads["dW"+str(g)]))  #/(1-(beta2**epoch))
         grads["db"+str(g)] = np.sum(grads["dZ"+str(g)], axis=1, keepdims=True)/m
-        v["db"+str(g)] = (beta1*v["db"+str(g)] + (1-beta1)*grads["db"+str(g)])   #/(1-(beta1**epoch))
+        v["db"+str(g)] = (beta1*v["db"+str(g)] + (1-beta1)*grads["db"+str(g)])  #/(1-(beta1**epoch))
         #s["db"+str(g)] = (beta2*s["db"+str(g)] + (1-beta2)*np.square(grads["db"+str(g)]))  #/(1-(beta2**epoch))
         grads["dA"+str(g-1)] = np.dot(parameters["W"+str(g)].T, grads["dZ"+str(g)])
-        parameters["W"+str(g)] = parameters["W"+str(g)] - learning_rate*v["dW"+str(g)]   #grads["dW"+str(g)]   #v["dW"+str(g)]  #/(np.sqrt(s["dW"+str(g)])+e)
-        parameters["b"+str(g)] = parameters["b"+str(g)] - learning_rate*v["db"+str(g)]   #grads["db"+str(g)]   #v["db"+str(g)]  #/(np.sqrt(s["db"+str(g)])+e)
+        parameters["W"+str(g)] = parameters["W"+str(g)] - learning_rate*v["dW"+str(g)]   #grads["dW"+str(g)]  #v["dW"+str(g)]  #/(np.sqrt(s["dW"+str(g)])+e)
+        parameters["b"+str(g)] = parameters["b"+str(g)] - learning_rate*v["db"+str(g)]   #grads["db"+str(g)]  #v["db"+str(g)]  #/(np.sqrt(s["db"+str(g)])+e)
     return grads, parameters, v, s
- 
+
 def actual_answer(Y):
     y = np.where(Y >= np.max(Y), 1, 0)
     return y
@@ -110,14 +110,14 @@ def main():
 
     nx = 2500
     learning_rate = 0.005
-    iterations = 30
+    iterations = 50
     parameters = {}
     v = {}
     s = {}
     grads = {}
     parameters["X0"] = X_Y_writer.data_X(nx)
     parameters["Y0"] = X_Y_writer.data_Y()
-    layers = (nx, 1000, 500, 100, 10)
+    layers = (nx, 1500, 500, 10)
     m = len(os.listdir("Database/Dataset"))-1
     cost_lib = []
 
@@ -150,7 +150,7 @@ def main():
 
     return 0
 
-main()
+# main()
     
 
 
