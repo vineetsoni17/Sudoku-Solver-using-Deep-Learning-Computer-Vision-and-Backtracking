@@ -26,7 +26,7 @@ def real_deal(im):
     return index
 
 def vectorization(im, parameters):
-    ret, x = cv2.threshold(im, 160, 255, cv2.THRESH_BINARY_INV)
+    x = im
     feature_vector = x.reshape(-1, 1)
     feature_vector = feature_vector.astype('float64')
     mean = np.mean(parameters["X0"])
