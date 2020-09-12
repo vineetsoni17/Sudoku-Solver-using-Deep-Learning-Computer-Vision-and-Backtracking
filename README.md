@@ -6,6 +6,6 @@ We have a program, a solution that will spare you from all that trouble.
 More details given below.
 :rocket: 
 
-## :memo: Structure of the program:
+### Structure of the program:
 
 It is divided on the basis of functions into four parts, named trivially 
