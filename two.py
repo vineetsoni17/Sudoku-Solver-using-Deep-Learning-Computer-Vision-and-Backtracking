@@ -4,13 +4,11 @@ import os
 import cv2 
 import torch
 
+import one
 import three 
-# import one
 import four
 
-im=cv2.imread("1200px-Sudoku_Puzzle_by_L2G-20050714_standardized_layout.svg.png")
-bw=cv2.cvtColor(im,cv2.COLOR_BGR2GRAY)
-img=cv2.GaussianBlur(bw,(1,1),cv2.BORDER_DEFAULT)
+img = cv2.imread("puzzle.jpg")
 q = 0
 grid = np.zeros((9, 9))
 height = img.shape[0]//9
