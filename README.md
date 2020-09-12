@@ -8,4 +8,6 @@ More details given below.
 
 ### Structure of the program:
 
-It is divided on the basis of functions into four parts, named trivially 
+It is divided on the basis of functions into four parts, named trivially which do specific jobs as given below:
+
+
