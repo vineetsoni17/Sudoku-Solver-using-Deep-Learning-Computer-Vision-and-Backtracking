@@ -112,7 +112,7 @@ def main():
 
     nx = 2500
     learning_rate = 0.005
-    iterations = 20
+    iterations = 30
     parameters = {}
     v = {}
     s = {}
