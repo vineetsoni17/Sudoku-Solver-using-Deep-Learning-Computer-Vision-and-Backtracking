@@ -133,7 +133,6 @@ def main():
     mini = 256
     z = 1
     for i in range(0, iterations):
-        print(i)
         for j in range(0, queryY.shape[1]//mini):
             parameters["X"] = queryX[:, int(j*mini): int((j+1)*mini)]
             parameters["Y"] = queryY[:, int(j*mini): int((j+1)*mini)]
