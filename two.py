@@ -9,7 +9,7 @@ import one
 import three 
 import four
 
-Print("Reading Sudoku Content")
+print("Reading Sudoku Content")
 img = cv2.imread("puzzle_extracted.jpg")
 q = 0
 grid = np.zeros((9, 9))
