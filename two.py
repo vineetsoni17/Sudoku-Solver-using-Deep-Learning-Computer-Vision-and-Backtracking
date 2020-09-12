@@ -5,6 +5,8 @@ import cv2
 import torch
 
 import three 
+# import one
+import four
 
 im=cv2.imread("1200px-Sudoku_Puzzle_by_L2G-20050714_standardized_layout.svg.png")
 bw=cv2.cvtColor(im,cv2.COLOR_BGR2GRAY)

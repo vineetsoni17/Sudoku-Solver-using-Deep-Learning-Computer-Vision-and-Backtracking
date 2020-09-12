@@ -26,7 +26,7 @@ def real_deal(im):
     return index
 
 def vectorization(im, parameters):
-    ret, x = cv2.threshold(im, 160, 255, cv2.THRESH_BINARY_INV)
+    x = im
     feature_vector = x.reshape(-1, 1)
     feature_vector = feature_vector.astype('float64')
     mean = np.mean(parameters["X0"])
@@ -112,14 +112,14 @@ def main():
 
     nx = 2500
     learning_rate = 0.005
-    iterations = 30
+    iterations = 35
     parameters = {}
     v = {}
     s = {}
     grads = {}
     parameters["X0"] = X_Y_writer.data_X(nx)
     parameters["Y0"] = X_Y_writer.data_Y()
-    layers = (nx, 500, 10, 10)
+    layers = (nx, 1000, 10, 10)
     m = len(os.listdir("Database/Dataset"))-1
     cost_lib = []
 
@@ -133,7 +133,6 @@ def main():
     mini = 256
     z = 1
     for i in range(0, iterations):
-        print(i)
         for j in range(0, queryY.shape[1]//mini):
             parameters["X"] = queryX[:, int(j*mini): int((j+1)*mini)]
             parameters["Y"] = queryY[:, int(j*mini): int((j+1)*mini)]

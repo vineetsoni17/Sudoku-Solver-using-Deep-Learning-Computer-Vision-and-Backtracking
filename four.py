@@ -65,3 +65,6 @@ def main(grid):
             break
     print("Question : " ,'\n', grid,)
     path(grid, n)
+
+# grid = np.array()
+# main(grid)

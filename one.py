@@ -1,50 +1,45 @@
-import cv2
 import numpy as np
-import matplotlib.pyplot as plt
+import cv2
 
-def fun(x):
-    print(x)
+square_pts = []
+def get_coordinates(event, x, y, flags, param):
+    global square_pts, count
+    if event == cv2.EVENT_LBUTTONDOWN:
+        square_pts.append((x, y))
+        count = count+1
+        cv2.circle(thresh_inv, square_pts[-1], radius = 5, color = (0, 0, 0), thickness = -1)
 
-cv2.namedWindow('image')
-cv2.createTrackbar('bw_threshold','image', 1, 255, fun)
-cv2.createTrackbar('constant','image', 0, 100, fun)
 
-cap=cv2.VideoCapture(0)
+cap = cv2.VideoCapture(0)
 
 while True:
-    a=cv2.getTrackbarPos('bw_threshold', 'image')
-    b=cv2.getTrackbarPos('constant', 'image')
-    f, im= cap.read()
-    bw=cv2.cvtColor(im,cv2.COLOR_BGR2GRAY)
-    x=cv2.GaussianBlur(bw,(5,5),cv2.BORDER_DEFAULT)
-    inv=cv2.adaptiveThreshold(x, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 2*a+1, b)
-    canny=cv2.Canny(inv, 100, 100)
-    contour, hierarchy=cv2.findContours(canny, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    cv2.drawContours(im, contour, -1, (0, 0, 255), 4)
-    cv2.imshow('im', im)
-    cv2.imshow('canny', canny)
-    cv2.imshow('inv', inv)
-    if cv2.waitKey(5) & 0xFF==ord('q'):
+    ret, frame = cap.read()
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    blur = cv2.GaussianBlur(gray, (5, 5), cv2.BORDER_DEFAULT)
+    thresh_inv = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY_INV, 9, 2)
+    cv2.imshow('Video Feed', thresh_inv)
+    if cv2.waitKey(5) & 0xFF == ord('q'):
         break
 
 cap.release()
 cv2.destroyAllWindows()
 
-# lines=(cv2.HoughLines(inv, 1, np.pi/180, 1000))
+count = 0
+cv2.namedWindow('Final Image')
+cv2.setMouseCallback('Final Image', get_coordinates)
 
-# grid_marked=im
-# for i in range(0,len(lines)):
-#     for dist, theta in lines[i]:
-#         a=np.cos(theta)
-#         b=np.sin(theta)
-#         x=a*dist
-#         y=b*dist
-#         x1=int(x+(2000*(-b)))
-#         y1=int(y+(2000*(a)))
-#         x2=int(x-(2000*(-b)))
-#         y2=int(y-(2000*(a)))
-#         cv2.line(grid_marked, (x1,y1), (x2,y2), (0,255,0), 3)
+while count < 4:
+    cv2.imshow('Final Image', thresh_inv)
+    if cv2.waitKey(5) & 0xFF == ord('q'):
+        break
+cv2.destroyAllWindows()
 
-# cv2.imwrite('grid_marked.png', grid_marked)
-# plt.imshow(grid_marked)
-# plt.show()
+square_pts = np.float32(square_pts)
+dst = np.float32([[0,0],[0,252],[252,252],[252,0]])
+
+M = cv2.getPerspectiveTransform(square_pts, dst)
+transform = cv2.warpPerspective(thresh_inv, M, dsize=(252,252))
+
+cv2.namedWindow('Transformed Image')
+cv2.imshow('Transformed Image', transform)
+cv2.waitKey(0)
