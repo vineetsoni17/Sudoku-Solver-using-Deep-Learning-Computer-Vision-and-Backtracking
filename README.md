@@ -1,5 +1,6 @@
 ## :memo: Sudoku-Solver-using-Deep-Learning-Computer-Vision-and-Backtracking
-Hey there, sudoku lovers! Ever encountered a grid you could not solve and faced the trouble of solving it using computer programs by typing in all the digits one by one. Not anymore!
+Hey there, sudoku lovers! Ever encountered a grid you could not solve and faced the trouble of solving it using computer programs by typing in all the digits one by one.
+Not anymore!
 We have a program, a solution that will spare you from all that trouble.
 **This program uses, various methods of Computer Vision, Neural Networks, and Backtracking.**
 
@@ -21,4 +22,7 @@ window and the image is saved by the name 'puzzle_extacted.jpg'.
 
 #### 2. Segregating the unit cells in sudoku (two.py)
 
-==This part of the launcher of the entire project, as it connects all the four parts and acts an intermediate.== Other than that, the function of the program is to segregate all the 81 unit cells of the sudoku grid into individual images of a particular size using slicing and indexing and sends it to the trained Neural Network so as to identify the number in each image. The numbers so returned get stored in a numpy array, to be further sent to the solver program (four.py).
+==This part of the Project, apart from being an intermediate, is the launcher of the entire project, as it connects all the four parts.== Other than that, the function
+of the program is to read the saved image from Part 1 (one.py) namely 'puzzle_extracted.jpg' and segregates all the 81 unit cells of the sudoku grid into individual images
+of a particular size using slicing and indexing and sends it to the trained Neural Network so as to identify the number in each image. The numbers so returned get stored
+in a numpy array, to be further sent to the solver program (four.py).
