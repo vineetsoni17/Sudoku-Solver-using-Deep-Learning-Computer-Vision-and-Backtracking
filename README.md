@@ -8,7 +8,7 @@ More details given below.
 
 ### Structure of the program:
 
-It is divided on the basis of functions into four parts, named trivially 
+It is divided on the basis of functions into four parts, named trivially as given underneath.
 
 #### 1. Extracting the Sudoku Puzzle from the webcam (one.py)
 
