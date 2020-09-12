@@ -8,7 +8,7 @@ import one
 import three 
 import four
 
-img = cv2.imread("puzzle.jpg")
+img = cv2.imread("puzzle_extracted.jpg")
 q = 0
 grid = np.zeros((9, 9))
 height = img.shape[0]//9
