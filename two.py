@@ -21,7 +21,7 @@ for j in range(0,9):
         grid[j, k] = index
         q +=1
 
-print(grid)
+four.main(grid)
 
 # ret, inv=cv2.threshold(x, 170, 255, cv2.THRESH_BINARY_INV)
 # canny=cv2.Canny(inv, 200, 150)
