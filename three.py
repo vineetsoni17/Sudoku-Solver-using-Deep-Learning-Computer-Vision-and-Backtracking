@@ -11,7 +11,7 @@ def real_deal(im):
     parameters = {}
     parameters["X0"] = X_Y_writer.data_X(nx)
     parameters["Y0"] = X_Y_writer.data_Y()
-    layers = (nx, 1500, 10, 10)
+    layers = (nx, 100, 50, 10)
     j = 1
     for i in os.listdir("Parameters"):
         layer = np.load(f"Parameters/{i}")
@@ -112,19 +112,19 @@ def main():
 
     nx = 2500
     learning_rate = 0.01
-    iterations = 25
+    iterations = 20
     parameters = {}
     v = {}
     s = {}
     grads = {}
     parameters["X0"] = X_Y_writer.data_X(nx)
     parameters["Y0"] = X_Y_writer.data_Y()
-    layers = (nx, 1500, 10, 10)
+    layers = (nx, 100, 50, 10)
     m = len(os.listdir("Database/Dataset"))-1
     cost_lib = []
 
-    data_shuffle(parameters, m)
-    initialize_parameters(layers, parameters, v, s)
+    parameters = data_shuffle(parameters, m)
+    parameters, v, s = initialize_parameters(layers, parameters, v, s)
     
     print("Training Neural Network, please wait......")
     # mini batch starting 
@@ -136,9 +136,9 @@ def main():
         for j in range(0, queryY.shape[1]//mini):
             parameters["X"] = queryX[:, int(j*mini): int((j+1)*mini)]
             parameters["Y"] = queryY[:, int(j*mini): int((j+1)*mini)]
-            forward_propagation(parameters, layers)
+            parameters = forward_propagation(parameters, layers)
             cost = cost_function(parameters)
-            gradient_descent_and_update_parameters(parameters, layers, grads, learning_rate, v, s, z)
+            grads, parameters, v, s = gradient_descent_and_update_parameters(parameters, layers, grads, learning_rate, v, s, z)
             cost_lib.append(cost)
             z += 1
     
@@ -154,7 +154,7 @@ def main():
 
     return 0
 
-main()
+# main()
     
 
 

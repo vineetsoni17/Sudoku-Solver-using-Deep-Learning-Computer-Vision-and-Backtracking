@@ -35,8 +35,8 @@ for i in os.listdir("Parameters"):
     j += 1
 parameters["X"] = np.load("X_dev.npy")
 parameters["Y"] = np.load("Y_dev.npy")    
-layers = (nx, 1500, 10, 10)
-three.forward_propagation(parameters, layers)
+layers = (nx, 100, 50, 10)
+parameters = three.forward_propagation(parameters, layers)
 index = np.argmax(parameters["_Y_"], axis=0)
 parameters["Y"] = np.argmax(parameters["Y"], axis=0)
 index = index.astype('float64')
