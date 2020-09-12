@@ -43,4 +43,4 @@ transform = cv2.warpPerspective(thresh_inv, M, dsize=(252,252))
 cv2.namedWindow('Transformed Image')
 cv2.imshow('Transformed Image', transform)
 cv2.waitKey(0) 
-
+cv2.imwrite('puzzle_extracted.jpg', transform)
