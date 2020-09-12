@@ -4,10 +4,12 @@ import os
 import cv2 
 import torch
 
+print("Starting Program")
 import one
 import three 
 import four
 
+Print("Reading Sudoku Content")
 img = cv2.imread("puzzle_extracted.jpg")
 q = 0
 grid = np.zeros((9, 9))
@@ -21,6 +23,7 @@ for j in range(0,9):
         grid[j, k] = index
         q +=1
 
+print("Solving Sudoku")
 four.main(grid)
 
 # ret, inv=cv2.threshold(x, 170, 255, cv2.THRESH_BINARY_INV)

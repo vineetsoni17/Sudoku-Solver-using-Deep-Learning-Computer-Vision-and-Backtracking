@@ -11,7 +11,7 @@ def real_deal(im):
     parameters = {}
     parameters["X0"] = X_Y_writer.data_X(nx)
     parameters["Y0"] = X_Y_writer.data_Y()
-    layers = (nx, 500, 10, 10)
+    layers = (nx, 1500, 10, 10)
     j = 1
     for i in os.listdir("Parameters"):
         layer = np.load(f"Parameters/{i}")
@@ -111,15 +111,15 @@ def main():
     print("Initializing Program......")
 
     nx = 2500
-    learning_rate = 0.005
-    iterations = 35
+    learning_rate = 0.01
+    iterations = 25
     parameters = {}
     v = {}
     s = {}
     grads = {}
     parameters["X0"] = X_Y_writer.data_X(nx)
     parameters["Y0"] = X_Y_writer.data_Y()
-    layers = (nx, 1000, 10, 10)
+    layers = (nx, 1500, 10, 10)
     m = len(os.listdir("Database/Dataset"))-1
     cost_lib = []
 
@@ -154,7 +154,7 @@ def main():
 
     return 0
 
-# main()
+main()
     
 
 
