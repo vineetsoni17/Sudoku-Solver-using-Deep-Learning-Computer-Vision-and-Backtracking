@@ -8,6 +8,11 @@ More details given below.
 
 ### Structure of the program:
 
-It is divided on the basis of functions into four parts, named trivially which do specific jobs as given below:
+It is divided on the basis of functions into four parts, named trivially 
 
+#### 1. Extracting the Sudoku Puzzle from the webcam.
 
+We use the following libraries to achieve our goal:
+-OpenCV
+-Numpy
+The Video Feed is set live using the function cv2.VideoCapture() and each frame is captured from the feed. The frame is first converted into a grayscale image and the noise in the frame is reduced by the use of cv2.GuassianBlur(). Then the frame is converted into a binary image with the help of Adaptive Threshold function with inverse adaptive type.
