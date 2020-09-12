@@ -3,10 +3,10 @@ import numpy as np
 import os 
 
 y = 0
-q = 1135
+q = 1
 for i in os.listdir("Database"):
     print(i)
-    if i != "sudoku-blankgrid.png":
+    if i == "divider.py" or i == "Dataset":
         continue
     img = cv2.imread(os.path.join('Database', i), cv2.IMREAD_GRAYSCALE)
     # ret, inv = cv2.threshold(img, 160, 255, cv2.THRESH_BINARY_INV)
