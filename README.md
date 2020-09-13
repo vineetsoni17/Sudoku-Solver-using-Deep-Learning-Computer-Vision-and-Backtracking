@@ -51,5 +51,3 @@ Finally, the scanned grid is structured and initialized as numpy array, with 0 i
 - To run the program, run two.py file.
 - Do not use handwritten sudoku.
 - To train the neural network again, uncomment '#main()' in the last line of three.py and run. Comment the 'main()' on the last line again.
-- Commented out parts of code are redundant while running the program, they were added while development, and can be used to make quick changes to the codes.
-- Order of selection of crop points should be top-left, bottom left, bottom right and top right.

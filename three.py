@@ -71,12 +71,14 @@ def forward_propagation(parameters, layers):
     parameters["_Y_"] = a/np.sum(a, axis=0)
     return parameters
 
-def cost_function(parameters):
+def cost_function(parameters, lambd, layers):
     loss = -(np.multiply(parameters["Y"], np.log(parameters["_Y_"]))) #- (np.multiply(1-parameters["Y"], np.log(1-parameters["_Y_"])))
     cost = np.sum(loss)/parameters["X"].shape[1]
+    for i in range(1, len(layers)):
+        cost += lambd*np.sum(parameters["W"+str(i)]**2)/(2*parameters["X"].shape[1])
     return cost
 
-def gradient_descent_and_update_parameters(parameters, layers, grads, learning_rate, v, s, t):
+def gradient_descent_and_update_parameters(parameters, layers, grads, learning_rate, v, s, t, lambd):
     beta1 = 0.9
     beta2 = 0.99
     e = 10**-8
@@ -89,7 +91,7 @@ def gradient_descent_and_update_parameters(parameters, layers, grads, learning_r
             grads["dZ"+str(g)] = parameters["_Y_"] - parameters["Y"]
         else:
             grads["dZ"+str(g)] = grads["dA"+str(g)]*sigmoid(parameters["Z"+str(g)])*(1-sigmoid(parameters["Z"+str(g)]))   #np.multiply(grads["dA"+str(g)],np.reciprocal(np.square(np.cosh(parameters["Z"+str(g)]))))
-        grads["dW"+str(g)] = np.dot(grads["dZ"+str(g)], parameters["A"+str(g-1)].T)/m
+        grads["dW"+str(g)] = np.dot(grads["dZ"+str(g)], parameters["A"+str(g-1)].T)/m + lambd*parameters["W"+str(g)]/parameters["X"].shape[1]
         v["dW"+str(g)] = (beta1*v["dW"+str(g)] + (1-beta1)*grads["dW"+str(g)])  #/(1-(beta1**t))
         s["dW"+str(g)] = (beta2*s["dW"+str(g)] + (1-beta2)*np.square(grads["dW"+str(g)]))  #/(1-(beta2**t))
         grads["db"+str(g)] = np.sum(grads["dZ"+str(g)], axis=1, keepdims=True)/m
@@ -111,8 +113,9 @@ def main():
     print("Initializing Program......")
 
     nx = 2500
-    learning_rate = 0.001
-    iterations = 20
+    learning_rate = 0.002
+    iterations = 35
+    lambd = 0.5
     parameters = {}
     v = {}
     s = {}
@@ -130,15 +133,15 @@ def main():
     # mini batch starting 
     queryX = parameters["X"]
     queryY = parameters["Y"]
-    mini = 128
+    mini = 256
     z = 1
     for i in range(0, iterations):
         for j in range(0, queryY.shape[1]//mini):
             parameters["X"] = queryX[:, int(j*mini): int((j+1)*mini)]
             parameters["Y"] = queryY[:, int(j*mini): int((j+1)*mini)]
             parameters = forward_propagation(parameters, layers)
-            cost = cost_function(parameters)
-            grads, parameters, v, s = gradient_descent_and_update_parameters(parameters, layers, grads, learning_rate, v, s, z)
+            cost = cost_function(parameters, lambd, layers)
+            grads, parameters, v, s = gradient_descent_and_update_parameters(parameters, layers, grads, learning_rate, v, s, z, lambd)
             cost_lib.append(cost)
             z += 1
     
