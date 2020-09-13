@@ -52,3 +52,4 @@ Finally, the scanned grid is structured and initialized as numpy array, with 0 i
 - Do not use handwritten sudoku.
 - To train the neural network again, uncomment '#main()' in the last line of three.py and run. Comment the 'main()' on the last line again.
 - The crop points in webcam feed to be given in the order top-left, bottom-left, bottom-right, and top-right.
+- The commented parts of codes were added during development, and were left, to make the process of updating faster.
