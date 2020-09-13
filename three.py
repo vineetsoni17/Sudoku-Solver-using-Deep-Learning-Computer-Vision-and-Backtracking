@@ -11,7 +11,7 @@ def real_deal(im):
     parameters = {}
     parameters["X0"] = X_Y_writer.data_X(nx)
     parameters["Y0"] = X_Y_writer.data_Y()
-    layers = (nx, 1000, 50, 10)
+    layers = (nx, 2000, 100, 10)
     j = 1
     for i in os.listdir("Parameters"):
         layer = np.load(f"Parameters/{i}")
@@ -66,7 +66,7 @@ def forward_propagation(parameters, layers):
     parameters["A0"] = parameters["X"]
     for i in range(1, len(layers)):
         parameters["Z"+str(i)] = np.dot(parameters["W"+str(i)], parameters["A"+str(i-1)]) + parameters["b"+str(i)]
-        parameters["A"+str(i)] = np.tanh(parameters["Z"+str(i)])
+        parameters["A"+str(i)] = sigmoid(parameters["Z"+str(i)])
     a = np.exp(parameters["Z"+str(len(layers)-1)])
     parameters["_Y_"] = a/np.sum(a, axis=0)
     return parameters
@@ -88,7 +88,7 @@ def gradient_descent_and_update_parameters(parameters, layers, grads, learning_r
         if g == l-1:
             grads["dZ"+str(g)] = parameters["_Y_"] - parameters["Y"]
         else:
-            grads["dZ"+str(g)] = np.multiply(grads["dA"+str(g)],np.reciprocal(np.square(np.cosh(parameters["Z"+str(g)]))))   #grads["dA"+str(g)]*sigmoid(parameters["Z"+str(g)])*(1-sigmoid(parameters["Z"+str(g)]))   #np.multiply(grads["dA"+str(g)],np.reciprocal(np.square(np.cosh(parameters["Z"+str(g)]))))
+            grads["dZ"+str(g)] = grads["dA"+str(g)]*sigmoid(parameters["Z"+str(g)])*(1-sigmoid(parameters["Z"+str(g)]))   #np.multiply(grads["dA"+str(g)],np.reciprocal(np.square(np.cosh(parameters["Z"+str(g)]))))
         grads["dW"+str(g)] = np.dot(grads["dZ"+str(g)], parameters["A"+str(g-1)].T)/m
         v["dW"+str(g)] = (beta1*v["dW"+str(g)] + (1-beta1)*grads["dW"+str(g)])  #/(1-(beta1**t))
         s["dW"+str(g)] = (beta2*s["dW"+str(g)] + (1-beta2)*np.square(grads["dW"+str(g)]))  #/(1-(beta2**t))
@@ -111,15 +111,15 @@ def main():
     print("Initializing Program......")
 
     nx = 2500
-    learning_rate = 0.01
-    iterations = 35
+    learning_rate = 0.005
+    iterations = 40
     parameters = {}
     v = {}
     s = {}
     grads = {}
     parameters["X0"] = X_Y_writer.data_X(nx)
     parameters["Y0"] = X_Y_writer.data_Y()
-    layers = (nx, 1000, 50, 10)
+    layers = (nx, 2000, 100, 10)
     m = len(os.listdir("Database/Dataset"))-1
     cost_lib = []
 
