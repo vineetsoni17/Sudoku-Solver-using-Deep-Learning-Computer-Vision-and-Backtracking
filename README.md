@@ -43,3 +43,11 @@ All the other files except one.py, two.py and four.py, all belong to this part. 
 Finally, the scanned grid is structured and initialized as numpy array, with 0 in place of blank spaces, and sent to four.py. This part uses the recursive backtracking algorithm to solve the sudoku grid and prints the solved grid!
 
 :arrow_right: Voila, your sudoku got solved and the tremendous frustration of an unsolved sudoku got avoided!
+
+---
+
+### Footnotes
+
+- To run the program, run two.py file.
+- Do not use handwritten sudoku.
+- To train the neural network again, uncomment '#main()' in the last line of three.py and run. Comment the 'main()' on the last line again.
