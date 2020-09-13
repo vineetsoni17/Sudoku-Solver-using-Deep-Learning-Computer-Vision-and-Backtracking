@@ -112,7 +112,7 @@ def main():
 
     nx = 2500
     learning_rate = 0.001
-    iterations = 30
+    iterations = 20
     parameters = {}
     v = {}
     s = {}
@@ -130,7 +130,7 @@ def main():
     # mini batch starting 
     queryX = parameters["X"]
     queryY = parameters["Y"]
-    mini = 256
+    mini = 128
     z = 1
     for i in range(0, iterations):
         for j in range(0, queryY.shape[1]//mini):
