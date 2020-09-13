@@ -10,7 +10,8 @@ import three
 import four
 
 print("Reading Sudoku Content")
-img = cv2.imread("puzzle_extracted.jpg")
+im = cv2.imread("puzzle_extracted.jpg")
+img = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
 q = 0
 grid = np.zeros((9, 9))
 height = img.shape[0]//9
@@ -24,7 +25,6 @@ for j in range(0,9):
         q +=1
 
 print("Solving Sudoku")
-four.main(grid)
 
 # ret, inv=cv2.threshold(x, 170, 255, cv2.THRESH_BINARY_INV)
 # canny=cv2.Canny(inv, 200, 150)
