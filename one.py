@@ -16,7 +16,7 @@ while True:
     ret, frame = cap.read()
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     blur = cv2.GaussianBlur(gray, (5, 5), cv2.BORDER_DEFAULT)
-    thresh_inv = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY_INV, 9, 2)
+    thresh_inv = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY_INV, 5, 3)
     cv2.imshow('Video Feed', thresh_inv)
     if cv2.waitKey(5) & 0xFF == ord('q'):
         break
